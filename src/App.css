@@ -28,6 +28,12 @@
   color: #61dafb;
 }
 
+.grid-wrapper{
+  display: flex;
+  max-width: 1000px;
+  flex-flow: wrap;
+}
+
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);
@@ -36,3 +42,4 @@
     transform: rotate(360deg);
   }
 }
+
