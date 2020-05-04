@@ -5,14 +5,14 @@ import {
   isFibonacciNumber,
   rowColumnChanger,
   IFibonacciesQty,
-  isThereSequence,
+  isThereSequence, returnArrayWithResettedFibonaccies,
 } from "./helpers";
 import "./App.css";
 import SingleGrid from "./SingleGrid";
 
 function App() {
   const [gridData, setGridData] = useState<IGridElement[][]>(initialData);
-  const [fibonaccies, setFibonaccies] = useState<IFibonacciesQty>({
+  const [fibonaccies, setFibonaccies] = useState<IFibonacciesQty>({// this array is keeping track of rows and columns fibonacci numbers existence
     rows: {},
     columns: {},
   });
@@ -116,15 +116,8 @@ function App() {
           );
           if (fibonacciObj.exist) {
             const { startIndex, endIndex } = fibonacciObj;
-            const newChunk: IGridElement[] = new Array(
-              endIndex - startIndex + 1
-            ).fill({ value: 0, isFibonacci: false });
             fibonacciObj.exist = false;
-            return [
-              ...elementsRow.slice(0, startIndex),
-              ...newChunk,
-              ...elementsRow.slice(endIndex + 1, elementsRow.length),
-            ];
+            return returnArrayWithResettedFibonaccies(elementsRow , startIndex, endIndex);
           } else {
             return elementsRow;
           }
@@ -139,10 +132,11 @@ function App() {
       <header className="App-header">
         <div className="grid-wrapper">
           {gridData.map((gridRow: IGridElement[], rowIndex: number) => {
-            return gridRow.map(({ value }: IGridElement, idx: number) => {
+            return gridRow.map(({ value, isReset}: IGridElement, idx: number) => {
               return (
                 <SingleGrid
                   count={value}
+                  isReset={isReset}
                   idx={idx}
                   rowIndex={rowIndex}
                   key={`${rowIndex}x${idx}`}

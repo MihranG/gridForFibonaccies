@@ -2,6 +2,7 @@
 export interface IGridElement {
   value: number;
   isFibonacci: boolean;
+  isReset?: boolean
 }
 
 export interface IFibonacciesQty {
@@ -102,3 +103,15 @@ export const isThereSequence = (
   }
   return { fibStart: -1, fibEnd: -1 };
 };
+
+export const returnArrayWithResettedFibonaccies =
+    (elementsArray: IGridElement[], startIndex: number, endIndex:number): IGridElement[]=>{
+      const newChunk: IGridElement[] = new Array(
+          endIndex - startIndex + 1
+      ).fill({ value: 0, isFibonacci: false, isReset: true });
+      return [
+        ...elementsArray.slice(0, startIndex),
+        ...newChunk,
+        ...elementsArray.slice(endIndex + 1, elementsArray.length),
+      ];
+    }

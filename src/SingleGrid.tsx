@@ -3,8 +3,7 @@ import "./SingleGrid.css";
 import { useEffect, useState } from "react";
 
 interface ISingleFrid {
-  //color?: string,
-  isFibonacci?: boolean;
+  isReset?: boolean;
   count?: number;
   idx: number;
   rowIndex: number;
@@ -13,23 +12,33 @@ interface ISingleFrid {
 
 const SingleGrid: React.FC<ISingleFrid> = ({
   count,
-  //color,
+  isReset,
   idx,
   rowIndex,
   onGridClick,
 }) => {
-  const [isYellow, setIsYellow] = useState(false);
+  const [isColored, setIsColored] = useState('');
   useEffect(() => {
-    setIsYellow(true);
-    setTimeout(() => setIsYellow(false), 2000);
-  }, [count]);
+    if(count !== 0){
+      setIsColored('yellow');
+    }else if(isReset){
+      setIsColored('green')
+    }
+
+    const timerId = setTimeout(() => {
+      setIsColored('')
+    }, 500);
+    return ()=>{
+      clearTimeout(timerId)
+    }
+  }, [ count, isReset]);
   const clickHandler = () => {
     onGridClick(rowIndex, idx);
   };
   return (
     <div
       className="single-grid"
-      style={isYellow ? { backgroundColor: "yellow" } : {}}
+      style={isColored ? { backgroundColor: isColored, color: 'black' } : {}}
       onClick={clickHandler}
     >
       {count}
