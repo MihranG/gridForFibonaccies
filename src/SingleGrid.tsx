@@ -24,7 +24,6 @@ const SingleGrid: React.FC<ISingleFrid> = ({
     setTimeout(() => setIsYellow(false), 2000);
   }, [count]);
   const clickHandler = () => {
-    // console.log("clickHandler", rowIndex, idx);
     onGridClick(rowIndex, idx);
   };
   return (
