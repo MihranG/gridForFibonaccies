@@ -1,13 +1,12 @@
-.single-grid{
-    width:20px;
-    height: 16px;
-    border: 1px solid gray;
-    display: inline-block;
-    font-size: 12px;
-    box-sizing: border-box;
-
+.single-grid {
+  width: 20px;
+  height: 16px;
+  border: 1px solid gray;
+  display: inline-block;
+  font-size: 12px;
+  box-sizing: border-box;
 }
 
-br{
-    height: 2px;
+br {
+  height: 2px;
 }
