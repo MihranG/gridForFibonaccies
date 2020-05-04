@@ -1,10 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   IGridElement,
   initialData,
   isFibonacciNumber,
-  rowColumnChanger,
-  IFibonacciesQty,
   isThereSequence, returnArrayWithResettedFibonaccies,
 } from "./helpers";
 import "./App.css";
@@ -12,12 +10,7 @@ import SingleGrid from "./SingleGrid";
 
 function App() {
   const [gridData, setGridData] = useState<IGridElement[][]>(initialData);
-  const [fibonaccies, setFibonaccies] = useState<IFibonacciesQty>({// this array is keeping track of rows and columns fibonacci numbers existence
-    rows: {},
-    columns: {},
-  });
   const onGridClick = (rowIndex: number, columnIndex: number) => {
-    let newFibbonacies = { ...fibonaccies };
     const newGridData = gridData.map(
       (
         gridRow: IGridElement[],
@@ -29,29 +22,6 @@ function App() {
             (gridElement: IGridElement, elementsColumnIndex: number) => {
               //the same row elements
               const newElementValue = gridElement.value + 1;
-              if (
-                isFibonacciNumber(newElementValue) &&
-                !gridElement.isFibonacci
-              ) {
-                newFibbonacies = rowColumnChanger(
-                  elementsColumnIndex,
-                  rowIndex,
-                  newFibbonacies,
-                  true,
-                  true
-                );
-              } else if (
-                gridElement.isFibonacci &&
-                !isFibonacciNumber(newElementValue)
-              ) {
-                newFibbonacies = rowColumnChanger(
-                  elementsColumnIndex,
-                  rowIndex,
-                  newFibbonacies,
-                  false,
-                  true
-                );
-              }
               return {
                 value: newElementValue,
                 isFibonacci: isFibonacciNumber(newElementValue),
@@ -71,38 +41,15 @@ function App() {
                 //the same column elements except same row & same column
                 const newElementValue = gridElement.value + 1;
                 if (isFibonacciNumber(newElementValue)) {
-                  if (!gridElement.isFibonacci) {
-                    newFibbonacies = rowColumnChanger(
+                  const {fibStart, fibEnd} = isThereSequence(
+                      gridRow,
                       columnIndex,
-                      elementsRowIndex,
-                      newFibbonacies,
-                      true,
-                      false
-                    );
+                      newElementValue);
+                  if (fibStart !== -1) {
+                    fibonacciObj.exist = true;
+                    fibonacciObj.startIndex = fibStart;
+                    fibonacciObj.endIndex = fibEnd;
                   }
-                  if(fibonaccies.rows[elementsRowIndex]?.qty > 4){
-                    const {fibStart, fibEnd} = isThereSequence(
-                        gridRow,
-                        columnIndex,
-                        newElementValue
-                    );
-                    if (fibStart !== -1) {
-                      fibonacciObj.exist = true;
-                      fibonacciObj.startIndex = fibStart;
-                      fibonacciObj.endIndex = fibEnd;
-                    }
-                  }
-                } else if (
-                  gridElement.isFibonacci &&
-                  !isFibonacciNumber(newElementValue)
-                ) {
-                  newFibbonacies = rowColumnChanger(
-                    columnIndex,
-                    elementsRowIndex,
-                    newFibbonacies,
-                    false,
-                    false
-                  );
                 }
 
                 elementsRow.push({
@@ -125,7 +72,6 @@ function App() {
       }
     );
     setGridData(newGridData);
-    setFibonaccies(newFibbonacies);
   };
   return (
     <div className="App">

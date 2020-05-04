@@ -1,4 +1,3 @@
-
 export interface IGridElement {
   value: number;
   isFibonacci: boolean;
@@ -10,14 +9,16 @@ export interface IFibonacciesQty {
   columns: { [x: number]: { qty: number } };
 }
 
-export const initialData: IGridElement[][] = new Array(50)
+const GRID_SIZE: number = 50;
+
+export const initialData: IGridElement[][] = new Array(GRID_SIZE)
   .fill(null)
   .map((arrRow) => {
-    return new Array(50).fill({ value: 0, isFibonacci: false });
+    return new Array(GRID_SIZE).fill({ value: 0, isFibonacci: false });
   });
 
 export const initialFibonaccies = (): IFibonacciesQty => {
-  const indexedObj: { [x: number]: { qty: number } } = new Array(50)
+  const indexedObj: { [x: number]: { qty: number } } = new Array(GRID_SIZE)
     .fill(0)
     .reduce((acc, el, i) => {
       acc[i] = { qty: el };
@@ -29,28 +30,6 @@ export const initialFibonaccies = (): IFibonacciesQty => {
   };
 };
 
-export const rowColumnChanger = (
-  columnIndex: number,
-  rowIndex: number,
-  obj: IFibonacciesQty,
-  isAdd: boolean,
-  isRow: boolean
-): IFibonacciesQty => {
-  const rows = { ...obj.rows };
-  const columns = { ...obj.columns };
-  const addableCorection = isAdd ? 0 : -2;
-  const certainRow = rows[rowIndex];
-  const certainColumn = columns[columnIndex];
-  certainRow
-    ? (certainRow.qty = (certainRow.qty || 0) + 1 + addableCorection)
-    : (rows[rowIndex] = { qty: 1 });
-  certainColumn
-    ? (certainColumn.qty = (certainColumn.qty || 0) + 1 + addableCorection)
-    : (columns[columnIndex] = { qty: 1 });
-
-  return { rows, columns };
-};
-
 export const isSquare = (num: number): boolean =>
   num > 0 && Math.sqrt(num) % 1 === 0;
 
@@ -60,13 +39,14 @@ export const isFibonacciNumber = (num: number): boolean =>
 export const isThereSequence = (
   gridRowArray: IGridElement[],
   elementsIndex: number,
-  newElementValue: number
+  newElementValue: number,
 ): { fibStart: number; fibEnd: number } => {
+
   let qty: number = 0;
   let startIndex: number = -1;
   let endIndex: number = -1;
   const startingIndex: number = -Math.min(4, elementsIndex);
-  const endingIndex: number = Math.min(4, 49 - elementsIndex);
+  const endingIndex: number = Math.min(4, GRID_SIZE - 1 - elementsIndex);
   const changedGridRowArray = [
     ...gridRowArray.slice(0, elementsIndex),
     { value: newElementValue, isFibonacci: true },
@@ -84,7 +64,6 @@ export const isThereSequence = (
       nextOfNextElement.value === nextElement.value + currentElement.value;
 
     if (
-      i < endingIndex - 3 &&
       areAllElementsFibonacci &&
       isThereFibonacciCondition
     ) {
@@ -93,13 +72,14 @@ export const isThereSequence = (
       }
       qty++;
       endIndex = certainIndex + 2;
-    } else if (qty < 3 && qty) {
+    } else if (qty > 0 && qty < 3) {
       qty = 0;
       startIndex = -1;
       endIndex = -1;
-    } else if (qty) {
-      return { fibStart: startIndex, fibEnd: endIndex };
     }
+  }
+  if(qty >=3){
+    return { fibStart: startIndex, fibEnd: endIndex };
   }
   return { fibStart: -1, fibEnd: -1 };
 };
